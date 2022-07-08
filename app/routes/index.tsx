@@ -209,7 +209,7 @@ export default function Index() {
                 type="submit"
                 name="action"
                 value="create"
-                className="px-5 text-sm font-medium bg-slate-800 bg-slate-200 text-white rounded-lg"
+                className="px-5 text-sm font-medium bg-slate-800 text-white rounded-lg"
               >
                 {formState === "submitting" ? "Creating..." : "Create Calendar"}
               </button>
