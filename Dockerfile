@@ -1,8 +1,7 @@
-# As of 07-07-2022: Node 18 causes a segfault when prisma tries to access database
-FROM node:16-alpine as base
+FROM node:19-alpine3.16 as base
 WORKDIR /home/node/nodeapp
 # Prisma needs openssl
-RUN apk add --no-cache openssl
+RUN apk add --no-cache libc6-compat openssl openssl-dev
 
 # We temporarily need dev dependencies to build prisma
 FROM base as all-deps
