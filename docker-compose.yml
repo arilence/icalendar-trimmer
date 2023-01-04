@@ -1,11 +1,29 @@
 version: "3.7"
+
+x-environment: &default-environment
+  POSTGRES_USER: postgresuser
+  POSTGRES_PASSWORD: postgrespass
+  POSTGRES_DB: postgresdb
 services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      <<: *default-environment
+      NODE_ENV: development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/workspace
+    user: node
+    command: sleep infinity
   postgres:
     image: postgres:14.4
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+    restart: unless-stopped
+    environment: *default-environment
     ports:
       - "5432:5432"
+    # Uncomment if you want the database to persist between container rebuilds
+    # volumes:
+    #   - ./pgdata:/var/lib/postgresql/data

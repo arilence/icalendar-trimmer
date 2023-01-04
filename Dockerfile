@@ -1,7 +1,7 @@
-FROM node:19-alpine3.16 as base
+FROM node:19.3-bullseye as base
 WORKDIR /home/node/nodeapp
 # Prisma needs openssl
-RUN apk add --no-cache libc6-compat openssl openssl-dev
+RUN apt install libc6 openssl libssl-dev
 
 # We temporarily need dev dependencies to build prisma
 FROM base as all-deps

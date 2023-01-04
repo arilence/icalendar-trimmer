@@ -7,8 +7,6 @@
     "format": "prettier --write .",
     "dev": "concurrently \"npm run dev:css\" \"remix dev\"",
     "dev:css": "tailwindcss -w -o app/styles/tailwind.css",
-    "docker": "docker-compose up -d",
-    "docker:stop": "docker-compose down -v",
     "setup": "prisma generate && prisma migrate deploy && prisma db seed",
     "start": "remix-serve build"
   },
@@ -19,7 +17,7 @@
     "@remix-run/serve": "^1.6.1",
     "ics": "^2.35.0",
     "luxon": "^2.4.0",
-    "node-ical": "github:maybeinit/node-ical#vevent-status-type",
+    "node-ical": "github:arilence/node-ical#vevent-status-type",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "remix-params-helper": "^0.4.10",
