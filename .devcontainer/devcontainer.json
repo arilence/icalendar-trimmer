@@ -5,7 +5,7 @@
     "dockerComposeFile": "../docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
-    "postCreateCommand": "npm install",
+    "postCreateCommand": "npm install && npm run setup",
     "extensions": [
         "esbenp.prettier-vscode",
         "EditorConfig.EditorConfig"
