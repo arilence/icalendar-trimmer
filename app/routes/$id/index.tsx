@@ -46,13 +46,13 @@ export default function Index() {
                     Selected events:
                 </label>
                 <div className="max-h-52 overflow-y-scroll overscroll-auto bg-clip-padding border border-solid border-slate-300 rounded select-none">
-                    {Object.values(events).map((value) => (
-                        <ul>
+                    <ul>
+                        {Object.values(events).map((value) => (
                             <li key={value} className="mx-1">
                                 {value}
                             </li>
-                        </ul>
-                    ))}
+                        ))}
+                    </ul>
                 </div>
                 <fieldset className="flex h-10 mt-4 gap-2 place-content-start">
                     <Link to="/">
