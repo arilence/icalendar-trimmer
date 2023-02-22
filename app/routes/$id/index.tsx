@@ -1,10 +1,13 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 
 import { getCalendar } from "~/models/calendar.server";
+import { requireUser } from "~/session.server";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
+    const user = await requireUser(request);
+
     if (!params.hasOwnProperty("id") || !params?.id) {
         throw new Response("No calendar specified");
     }
@@ -18,6 +21,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     const icsLink = "webcal://" + icsUrl.host + icsUrl.pathname + "/ics";
     const icsText = request.url + "/ics";
     return json({
+        user,
         id: calendarMetadata.id,
         selectedEvents: calendarMetadata.events,
         icsLink,
@@ -32,6 +36,17 @@ export default function Index() {
         : null;
     return (
         <div className="flex flex-col my-2 sm:my-0 sm:justify-center h-screen container mx-auto max-w-md font-sans">
+            <Form action="/logout" method="post">
+                <span className="text-sm font-medium text-slate-600">
+                    Logged in as {loaderData.user.username}
+                </span>
+                <button
+                    type="submit"
+                    className="ml-2 pb-1 text-sm font-medium text-slate-600"
+                >
+                    Log Out
+                </button>
+            </Form>
             <div className="p-6 bg-white flex-initial rounded-lg">
                 <div className="mb-4">
                     <p className="pb-1 block text-sm font-medium text-slate-600">

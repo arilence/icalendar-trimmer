@@ -1,11 +1,18 @@
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useActionData, Link, Form, useTransition } from "@remix-run/react";
+import {
+    useActionData,
+    Link,
+    Form,
+    useTransition,
+    useLoaderData,
+} from "@remix-run/react";
 import { z } from "zod";
 import { getParams } from "remix-params-helper";
 import * as icsParser from "node-ical";
 
 import { createCalendar } from "~/models/calendar.server";
+import { getUser, requireUser, requireUserId } from "~/session.server";
 
 async function getURL(remoteUrl: string): Promise<{}> {
     const remoteIcs = await icsParser.async.fromURL(remoteUrl);
@@ -26,7 +33,16 @@ async function getURL(remoteUrl: string): Promise<{}> {
     return Object.fromEntries(selectableEvents);
 }
 
+export const loader: LoaderFunction = async ({ request }) => {
+    const user = await requireUser(request);
+    return json({
+        user,
+    });
+};
+
 export const action: ActionFunction = async ({ request }) => {
+    const userId = await requireUserId(request);
+
     const urlSchema = z.object({
         action: z.enum(["load", "create"]),
         remoteUrl: z.string().url(),
@@ -64,7 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
                     selectableEvents,
                 });
             }
-            const calendar = await createCalendar({
+            const calendar = await createCalendar(userId, {
                 remoteUrl: selectResult.data.remoteUrl,
                 events: selectResult.data.selectedEvents,
             });
@@ -77,6 +93,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Index() {
+    const loaderData = useLoaderData();
     const actionData = useActionData();
     const transition = useTransition();
 
@@ -92,6 +109,17 @@ export default function Index() {
 
     return (
         <div className="flex flex-col my-2 sm:my-0 sm:justify-center h-screen container mx-auto max-w-md font-sans">
+            <Form action="/logout" method="post">
+                <span className="text-sm font-medium text-slate-600">
+                    Logged in as {loaderData.user.username}
+                </span>
+                <button
+                    type="submit"
+                    className="ml-2 pb-1 text-sm font-medium text-slate-600"
+                >
+                    Log Out
+                </button>
+            </Form>
             <Form
                 method="post"
                 className="p-6 bg-white flex-initial rounded-lg"
