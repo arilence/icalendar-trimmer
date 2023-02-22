@@ -1,4 +1,4 @@
-FROM node:19.3-bullseye as base
+FROM docker.io/library/node:16.19.1-bullseye as base
 WORKDIR /home/node/nodeapp
 # Prisma needs openssl
 RUN apt install libc6 openssl libssl-dev
