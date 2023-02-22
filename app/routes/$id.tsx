@@ -18,8 +18,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
         });
     }
     const icsUrl = new URL(request.url);
-    const icsLink = "webcal://" + icsUrl.host + icsUrl.pathname + "/ics";
-    const icsText = request.url + "/ics";
+    const icsLink = "webcal://" + icsUrl.host + icsUrl.pathname + ".ics";
+    const icsText = request.url + ".ics";
     return json({
         user,
         id: calendarMetadata.id,
