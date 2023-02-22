@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ if (!admin_username || !admin_password) {
 async function seed() {
     const userData = {
         username: admin_username,
-        passwordHash: admin_password,
+        passwordHash: await bcrypt.hash(admin_password, 10),
     };
     var user = await prisma.user.findFirst({
         where: {
