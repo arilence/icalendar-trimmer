@@ -2,25 +2,31 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const admin_username = process.env.ADMIN_USERNAME;
+const admin_password = process.env.ADMIN_PASSWORD;
+if (!admin_username || !admin_password) {
+    throw new Error("ADMIN_USERNAME and ADMIN_PASSWORD must be set");
+}
+
 async function seed() {
-    const firstUserData = {
-        id: "clef3m9rj000008jt6dxb5ixu",
-        username: "admin",
-        // this is a hashed version of "twixrox"
-        passwordHash:
-            "$2b$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu/1u",
+    const userData = {
+        username: admin_username,
+        passwordHash: admin_password,
     };
-    const firstUser = await prisma.user.upsert({
+    var user = await prisma.user.findFirst({
         where: {
-            id: firstUserData.id,
+            username: userData.username,
         },
-        update: {},
-        create: firstUserData,
     });
+    if (user === null) {
+        user = await prisma.user.create({
+            data: userData,
+        });
+    }
 
     const calendar = {
         id: "cl4uqo9cy000009ju2w47eqct",
-        authorId: firstUser.id,
+        authorId: user.id,
         remoteUrl:
             "https://calendar.google.com/calendar/ical/en.canadian%23holiday%40group.v.calendar.google.com/public/basic.ics",
         events: ["New Year's Day", "Remembrance Day (regional holiday)"],
